@@ -4,8 +4,8 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-identifier: colibri_imx7d/mcimx7d/m4
-name: TORADEX Colibri IMX7D
+identifier: cpsabre_imx7d/mcimx7d/m4
+name: NXP Sabre IMX7D
 type: mcu
 arch: arm
 ram: 32
