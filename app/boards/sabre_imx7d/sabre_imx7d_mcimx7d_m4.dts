@@ -1,0 +1,31 @@
+
+/dts-v1/;
+
+#include <nxp/nxp_imx7d_m4.dtsi>
+#include <nxp/nxp_imx/mimx7d-pinctrl.dtsi>
+
+/ {
+	model = "NXP Sabre IMX7D board";
+	compatible = "nxp,mcimx7d_m4";
+
+	aliases {
+		led0   = &green_led;
+	};
+
+	chosen {
+		zephyr,flash = &tcml_code;
+		zephyr,sram = &tcmu_sys;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		green_led: led_0 {
+			gpios = <&gpio1 2 GPIO_ACTIVE_LOW>;
+			label = "User LED1";
+		};
+	};
+};
+
+&gpio1 {
+	status = "okay";
+};

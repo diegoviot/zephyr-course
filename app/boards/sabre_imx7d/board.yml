@@ -1,0 +1,6 @@
+board:
+  name: sabre_imx7d
+  full_name: NXP Sabre - i.MX 7 SoM - ARM M4 Core
+  vendor: NXP
+  socs:
+    - name: mcimx7d
