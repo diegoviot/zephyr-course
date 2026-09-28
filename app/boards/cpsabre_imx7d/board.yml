@@ -1,6 +1,0 @@
-board:
-  name: cpsabre_imx7d
-  full_name: i.MX 7 Computer on Module - Sabre iMX7
-  vendor: NXP
-  socs:
-    - name: mcimx7d

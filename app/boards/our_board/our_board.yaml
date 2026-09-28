@@ -4,8 +4,8 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-identifier: cpsabre_imx7d/mcimx7d/m4
-name: NXP Sabre IMX7D
+identifier: our_board
+name: Our board
 type: mcu
 arch: arm
 ram: 32
