@@ -2,4 +2,8 @@
 	aliases {
 		app-led = &led0;
 	};
+	iomico_myled0: iomico_myled {
+		compatible = "iomico,myled0";
+		status = "okay";
+	};
 };

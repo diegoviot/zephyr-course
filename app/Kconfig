@@ -57,3 +57,4 @@ if LED_SUBSYSTEM
 endif
 
 source "Kconfig.zephyr"
+rsource "drivers/iomico_myled/Kconfig"
