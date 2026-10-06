@@ -12,18 +12,21 @@ LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
 namespace {
     void test() {
-        const struct device* driver = DEVICE_DT_GET(DT_NODELABEL(iomico_myled0));
+        const struct device* driver0 = DEVICE_DT_GET(DT_NODELABEL(iomico_myled0));
+        const struct device* driver1 = DEVICE_DT_GET(DT_NODELABEL(iomico_myled1));
         struct sensor_value val;
         
-        LOG_INF("Calling sensor_sample_fetch (turn LED ON)...");
-        auto ret1 = sensor_sample_fetch(driver);
-        LOG_INF("sensor_sample_fetch Return: %d", ret1);
+        LOG_INF("Calling sensor_sample_fetch (turn LEDs ON)...");
+        auto ret1 = sensor_sample_fetch(driver0);
+        auto ret2 = sensor_sample_fetch(driver1);
+        LOG_INF("sensor_sample_fetch Return: %d %d", ret1, ret2);
         
         k_msleep(500);
         
-        LOG_INF("Calling sensor_channel_get (turn LED OFF)...");
-        auto ret2 = sensor_channel_get(driver, SENSOR_CHAN_AMBIENT_TEMP, &val);
-        LOG_INF("sensor_channel_get Return: %d", ret2);
+        LOG_INF("Calling sensor_channel_get (turn LEDs OFF)...");
+        ret1 = sensor_channel_get(driver0, SENSOR_CHAN_AMBIENT_TEMP, &val);
+        ret2 = sensor_channel_get(driver1, SENSOR_CHAN_AMBIENT_TEMP, &val);
+        LOG_INF("sensor_channel_get Return: %d %d", ret1, ret2);
     }
 }
 

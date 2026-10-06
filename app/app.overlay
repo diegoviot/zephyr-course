@@ -6,4 +6,8 @@
 		compatible = "iomico,myled";
 		status = "okay";
 	};
+	iomico_myled1: iomico_myled1 {
+		compatible = "iomico,myled";
+		status = "okay";
+	};
 };

@@ -7,4 +7,9 @@
 		status = "okay";
 		gpios = <&gpio4 0x12 1>;
 	};
+	iomico_myled1: iomico_myled1 {
+		compatible = "iomico,myled";
+		status = "okay";
+		gpios = <&gpio4 0x13 1>;
+	};
 };
