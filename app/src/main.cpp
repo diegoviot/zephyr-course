@@ -14,8 +14,16 @@ namespace {
     void test() {
         const struct device* driver = DEVICE_DT_GET(DT_NODELABEL(iomico_myled0));
         struct sensor_value val;
-        auto ret = sensor_channel_get(driver, SENSOR_CHAN_AMBIENT_TEMP, &val);
-        LOG_INF("Channel Return: %d", ret);
+        
+        LOG_INF("Calling sensor_sample_fetch (turn LED ON)...");
+        auto ret1 = sensor_sample_fetch(driver);
+        LOG_INF("sensor_sample_fetch Return: %d", ret1);
+        
+        k_msleep(500);
+        
+        LOG_INF("Calling sensor_channel_get (turn LED OFF)...");
+        auto ret2 = sensor_channel_get(driver, SENSOR_CHAN_AMBIENT_TEMP, &val);
+        LOG_INF("sensor_channel_get Return: %d", ret2);
     }
 }
 
