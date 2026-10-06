@@ -7,11 +7,12 @@
 LOG_MODULE_REGISTER(iomico_myled, LOG_LEVEL_INF);
 
 static const struct gpio_dt_spec led_gpio = GPIO_DT_SPEC_INST_GET_OR(0, gpios, {0});
+static bool gpio_ok = false;
 
 static int sample_fetch_iomico_myled(const struct device *dev, enum sensor_channel chan)
 {	
 	LOG_INF("Iomico - MyLed - sample_fetch - turning LED ON");
-    gpio_pin_set_dt(&led_gpio, 1);
+    if(gpio_ok) gpio_pin_set_dt(&led_gpio, 1);
 	return 0;
 }
 
@@ -20,7 +21,7 @@ static int channel_get_iomico_myled(const struct device *dev,
 				                    struct sensor_value *val)
 {	
 	LOG_INF("Iomico - MyLed - channel_get - turning LED OFF");
-    gpio_pin_set_dt(&led_gpio, 0);
+    if(gpio_ok) gpio_pin_set_dt(&led_gpio, 0);
 	return 0;
 }
 
@@ -38,8 +39,12 @@ static int init(const struct device* dev)
 	if (led_gpio.port != NULL && device_is_ready(led_gpio.port)) {
 		LOG_INF("GPIO device is ready");
 		// Configure GPIO as output
-		if (gpio_pin_configure_dt(&led_gpio, GPIO_OUTPUT_INACTIVE) < 0) {
+		if (gpio_pin_configure_dt(&led_gpio, GPIO_OUTPUT_INACTIVE) != 0) {
 			LOG_WRN("Failed to configure GPIO");
+            gpio_ok = false;
+        }
+        else {
+            gpio_ok = true;
         }
     }
 	return 0;
