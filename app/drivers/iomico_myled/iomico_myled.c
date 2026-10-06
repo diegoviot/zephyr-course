@@ -4,24 +4,39 @@
 
 #define DT_DRV_COMPAT iomico_myled
 
-LOG_MODULE_REGISTER(iomico_myled, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(iomico_myled, LOG_LEVEL_DBG);
 
-static const struct gpio_dt_spec led_gpio = GPIO_DT_SPEC_INST_GET_OR(0, gpios, {0});
-static bool gpio_ok = false;
+static struct iomico_myled_data {
+	struct gpio_dt_spec led_gpio;
+    bool led_state;
+	bool gpio_ok;
+} myled_data = {
+    .led_gpio = GPIO_DT_SPEC_INST_GET_OR(0, gpios, {0}),
+    .led_state = false,
+    .gpio_ok = false
+};
+
+static uint32_t driver_cnt = 0;
 
 static int sample_fetch_iomico_myled(const struct device *dev, enum sensor_channel chan)
-{	
+{
 	LOG_INF("Iomico - MyLed - sample_fetch - turning LED ON");
-    if(gpio_ok) gpio_pin_set_dt(&led_gpio, 1);
+    if(myled_data.gpio_ok) gpio_pin_set_dt(&myled_data.led_gpio, 1);
+	myled_data.led_state = true;
+	driver_cnt++;
+	LOG_DBG("led_state:%d driver_cnt:%lu", myled_data.led_state, driver_cnt);
 	return 0;
 }
 
 static int channel_get_iomico_myled(const struct device *dev,
 				                    enum sensor_channel chan,
 				                    struct sensor_value *val)
-{	
+{
 	LOG_INF("Iomico - MyLed - channel_get - turning LED OFF");
-    if(gpio_ok) gpio_pin_set_dt(&led_gpio, 0);
+    if(myled_data.gpio_ok) gpio_pin_set_dt(&myled_data.led_gpio, 0);
+	myled_data.led_state = false;
+	driver_cnt++;
+	LOG_DBG("led_state:%d driver_cnt:%lu", myled_data.led_state, driver_cnt);
 	return 0;
 }
 
@@ -32,19 +47,19 @@ static DEVICE_API(sensor, api_iomico_assignment) = {
 
 // init function
 static int init(const struct device* dev)
-{	
+{
 	LOG_INF("Device Initialized");
 	
 	// Check if GPIO is available in devicetree
-	if (led_gpio.port != NULL && device_is_ready(led_gpio.port)) {
+	if (myled_data.led_gpio.port != NULL && device_is_ready(myled_data.led_gpio.port)) {
 		LOG_INF("GPIO device is ready");
 		// Configure GPIO as output
-		if (gpio_pin_configure_dt(&led_gpio, GPIO_OUTPUT_INACTIVE) != 0) {
+		if (gpio_pin_configure_dt(&myled_data.led_gpio, GPIO_OUTPUT_INACTIVE) != 0) {
 			LOG_WRN("Failed to configure GPIO");
-            gpio_ok = false;
+            myled_data.gpio_ok = false;
         }
         else {
-            gpio_ok = true;
+            myled_data.gpio_ok = true;
         }
     }
 	return 0;
