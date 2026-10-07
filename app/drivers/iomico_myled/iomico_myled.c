@@ -1,16 +1,11 @@
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/logging/log.h> 
+#include "iomico_myled.h"
 
 #define DT_DRV_COMPAT iomico_myled
 
 LOG_MODULE_REGISTER(iomico_myled, LOG_LEVEL_DBG);
-
-struct iomico_myled_data {
-	struct gpio_dt_spec led_gpio;
-    bool led_state;
-	bool gpio_ok;
-};
 
 static uint32_t driver_cnt = 0;
 
