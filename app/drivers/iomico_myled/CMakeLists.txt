@@ -1,3 +1,6 @@
 if (CONFIG_IOMICO_MYLED)
     target_sources(app PRIVATE iomico_myled.c)
+    if (CONFIG_SHELL)
+        target_sources(app PRIVATE iomico_myled_shell.c)
+    endif ()
 endif ()
