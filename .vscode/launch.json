@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug FRDM-MCXN236 (pyOCD)",
+      "type": "cortex-debug",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceFolder}/build/zephyr/zephyr.elf",
+      "servertype": "pyocd",
+      "targetId": "mcxn236",
+      "interface": "swd",
+      "runToEntryPoint": "main",
+      "gdbPath": "/home/viot/zephyr-sdk-0.17.4/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
+      "serverArgs": [
+        "--persist"
+      ],
+      "showDevDebugOutput": "raw",
+      "preLaunchTask": "west build"
+    },
+    {
+      "name": "Attach FRDM-MCXN236 (pyOCD)",
+      "type": "cortex-debug",
+      "request": "attach",
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceFolder}/build/zephyr/zephyr.elf",
+      "servertype": "pyocd",
+      "targetId": "mcxn236",
+      "interface": "swd",
+      "gdbPath": "/home/viot/zephyr-sdk-0.17.4/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb"
+    }
+  ]
+}

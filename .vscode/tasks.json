@@ -1,0 +1,65 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "west build",
+      "type": "shell",
+      "command": "west",
+      "args": [
+        "build",
+        "-b",
+        "frdm_mcxn236",
+        "${workspaceFolder}/app"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "west build (pristine)",
+      "type": "shell",
+      "command": "west",
+      "args": [
+        "build",
+        "-b",
+        "frdm_mcxn236",
+        "-p",
+        "always",
+        "${workspaceFolder}/app"
+      ],
+      "group": "build",
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "west flash",
+      "type": "shell",
+      "command": "west",
+      "args": [
+        "flash",
+        "--runner",
+        "pyocd"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "west clean",
+      "type": "shell",
+      "command": "rm",
+      "args": [
+        "-rf",
+        "${workspaceFolder}/build"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}
