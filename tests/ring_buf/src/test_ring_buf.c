@@ -49,6 +49,16 @@ ZTEST(ring_buf_init, test_reinit_clears_state)
 	zassert_equal(rb_count(), 0, "Fresh buffer count must be 0");
 }
 
+ZTEST(ring_buf_init, test_zero_capacity)
+{
+	zassert_equal(rb_init(0), -EINVAL, "Zero capacity must return -EINVAL");
+}
+
+ZTEST(ring_buf_init, test_max_capacity)
+{
+	zassert_equal(rb_init(RING_BUF_MAX_CAPACITY+1), -EINVAL, "Higher than max capacity must return -EINVAL");
+}
+
 /*
  * ============================================================================
  * Test Suite: ring_buf_push_pop
