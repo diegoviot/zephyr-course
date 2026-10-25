@@ -38,18 +38,29 @@ int main(void)
 
     test();
 
-    while (1) {
-        if (gpio_pin_set_dt(&led, 1) < 0) return 0;
-        k_msleep(25);
-        if (gpio_pin_set_dt(&led, 0) < 0) return 0;
-        k_msleep(25);
-        if (gpio_pin_set_dt(&led, 1) < 0) return 0;
-        k_msleep(25);
-        if (gpio_pin_set_dt(&led, 0) < 0) return 0;
-        k_msleep(25);
+    int32_t beat_ms = CONFIG_APP_HEARTBEAT_PERIOD_MS * 15 / 100;
+    int32_t sleep_ms = CONFIG_APP_HEARTBEAT_PERIOD_MS - (beat_ms * 4);
 
-        LOG_INF("LED heartbeat!");
-        k_msleep(CONFIG_APP_HEARTBEAT_PERIOD_MS - 100);
+    LOG_INF("beat_ms:%d sleep_ms:%d\n", beat_ms, sleep_ms);
+
+    uint8_t cnt = 0;
+    bool heartbeat = true;
+    while (1) {
+        if (heartbeat) {
+            if (gpio_pin_set_dt(&led, 1) < 0) return 0;
+            k_msleep(beat_ms);
+            if (gpio_pin_set_dt(&led, 0) < 0) return 0;
+            k_msleep(beat_ms);
+            if (gpio_pin_set_dt(&led, 1) < 0) return 0;
+            k_msleep(beat_ms);
+            if (gpio_pin_set_dt(&led, 0) < 0) return 0;
+            k_msleep(beat_ms);
+
+            LOG_INF("LED heartbeat #%d!", ++cnt);
+            if (cnt >= 10) heartbeat = false;
+        }
+        
+        k_msleep(sleep_ms);
     }
     return 0;
 }
