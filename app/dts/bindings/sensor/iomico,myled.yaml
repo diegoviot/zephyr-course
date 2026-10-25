@@ -1,0 +1,11 @@
+description: Iomico MyLed GPIO-driven LED (course sensor-style driver)
+
+compatible: "iomico,myled"
+
+include: base.yaml
+
+properties:
+  gpios:
+    type: phandle-array
+    required: true
+    description: GPIO used to drive the LED.

@@ -11,61 +11,82 @@ static uint32_t driver_cnt = 0;
 
 static int sample_fetch_iomico_myled(const struct device *dev, enum sensor_channel chan)
 {
-	struct iomico_myled_data *myled_data = dev->data;
+    const struct iomico_myled_config *cfg = dev->config;
+    struct iomico_myled_data *myled_data = dev->data;
 
-	LOG_INF("Iomico - MyLed - sample_fetch - turning LED ON");
-    if(myled_data->gpio_ok) gpio_pin_set_dt(&myled_data->led_gpio, 1);
-	myled_data->led_state = true;
-	driver_cnt++;
-	LOG_DBG("led_state:%d driver_cnt:%u", myled_data->led_state, driver_cnt);
-	return 0;
+    LOG_INF("Iomico - MyLed - sample_fetch - turning LED ON");
+    if(myled_data->gpio_ok) gpio_pin_set_dt(&cfg->led_gpio, 1);
+    myled_data->led_state = true;
+    driver_cnt++;
+    LOG_DBG("led_state:%d driver_cnt:%u", myled_data->led_state, driver_cnt);
+    return 0;
 }
 
 static int channel_get_iomico_myled(const struct device *dev,
-				                    enum sensor_channel chan,
-				                    struct sensor_value *val)
+                                    enum sensor_channel chan,
+                                    struct sensor_value *val)
 {
-	struct iomico_myled_data *myled_data = dev->data;
+    const struct iomico_myled_config *cfg = dev->config;
+    struct iomico_myled_data *myled_data = dev->data;
 
-	LOG_INF("Iomico - MyLed - channel_get - turning LED OFF");
-    if(myled_data->gpio_ok) gpio_pin_set_dt(&myled_data->led_gpio, 0);
-	myled_data->led_state = false;
-	driver_cnt++;
-	LOG_DBG("led_state:%d driver_cnt:%u", myled_data->led_state, driver_cnt);
-	return 0;
+    LOG_INF("Iomico - MyLed - channel_get - turning LED OFF");
+    if(myled_data->gpio_ok) gpio_pin_set_dt(&cfg->led_gpio, 0);
+    myled_data->led_state = false;
+    driver_cnt++;
+    LOG_DBG("led_state:%d driver_cnt:%u", myled_data->led_state, driver_cnt);
+    return 0;
 }
 
 static DEVICE_API(sensor, api_iomico_assignment) = {
-	.sample_fetch = sample_fetch_iomico_myled,
-	.channel_get = channel_get_iomico_myled,
+    .sample_fetch = sample_fetch_iomico_myled,
+    .channel_get = channel_get_iomico_myled,
 };
 
 // init function
 static int init(const struct device* dev)
 {
-	struct iomico_myled_data *myled_data = dev->data;
+    const struct iomico_myled_config *cfg = dev->config;
+    struct iomico_myled_data *myled_data = dev->data;
 
-	LOG_INF("Device Initialized");
-	
-	// Check if GPIO is available in devicetree
-	if (myled_data->led_gpio.port != NULL && device_is_ready(myled_data->led_gpio.port)) {
-		LOG_INF("GPIO device is ready");
-		// Configure GPIO as output
-		if (gpio_pin_configure_dt(&myled_data->led_gpio, GPIO_OUTPUT_INACTIVE) != 0) {
-			LOG_WRN("Failed to configure GPIO");
+    LOG_INF("Driver Init");
+
+    if (!dev) {
+        printk("device is NULL\n");
+        return -EINVAL;
+    }
+
+    // Check if GPIO is available in devicetree
+    if (gpio_is_ready_dt(&cfg->led_gpio)) {
+        LOG_INF("GPIO device is ready port:%s pin:%d", cfg->led_gpio.port->name, cfg->led_gpio.pin);
+        // Configure GPIO as output
+        if (gpio_pin_configure_dt(&cfg->led_gpio, GPIO_OUTPUT_INACTIVE) != 0) {
+            LOG_WRN("Failed to configure GPIO");
             myled_data->gpio_ok = false;
         }
         else {
             myled_data->gpio_ok = true;
         }
     }
-	return 0;
+    else
+        LOG_INF("GPIO device not ready!!");
+    return 0;
 }
 
-#define DEV_INST(inst) \
-	static struct iomico_myled_data iomico_myled_data_##inst = { \
-		.led_gpio = GPIO_DT_SPEC_INST_GET_OR(inst, gpios, {0}), \
-	}; \
-	DEVICE_DT_INST_DEFINE(inst, init, NULL, &iomico_myled_data_##inst, NULL, POST_KERNEL, 80, &api_iomico_assignment);
+#define DEV_INST(inst)                                            \
+static const struct iomico_myled_config cfg_##inst = {            \
+    .led_gpio = GPIO_DT_SPEC_INST_GET(inst, gpios),               \
+};                                                                \
+                                                                  \
+static struct iomico_myled_data data_##inst;                      \
+                                                                  \
+DEVICE_DT_INST_DEFINE(                                            \
+    inst,                                                         \
+    init,                                                         \
+    NULL,                                                         \
+    &data_##inst,                                                 \
+    &cfg_##inst,                                                  \
+    POST_KERNEL,                                                  \
+    80,                                                           \
+    &api_iomico_assignment);
 
 DT_INST_FOREACH_STATUS_OKAY(DEV_INST);
