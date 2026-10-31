@@ -5,9 +5,11 @@
 	iomico_myled0: iomico_myled0 {
 		compatible = "iomico,myled";
 		status = "okay";
+		gpios = <&gpio0 18 GPIO_ACTIVE_LOW>;
 	};
 	iomico_myled1: iomico_myled1 {
 		compatible = "iomico,myled";
 		status = "okay";
+		gpios = <&gpio0 19 GPIO_ACTIVE_LOW>;
 	};
 };
