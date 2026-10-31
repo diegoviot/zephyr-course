@@ -34,9 +34,19 @@ static int led_off(const struct device *dev)
     return 0;
 }
 
+static int set_gpio_ok(const struct device *dev, bool value)
+{
+    struct iomico_myled_data *myled_data = dev->data;
+
+    myled_data->gpio_ok = value;
+    LOG_DBG("gpio_ok set to %d", myled_data->gpio_ok);
+    return 0;
+}
+
 static const struct iomico_myled_api api_iomico_assignment = {
-    .on  = led_on,
-    .off = led_off,
+    .on          = led_on,
+    .off         = led_off,
+    .set_gpio_ok = set_gpio_ok,
 };
 
 // init function

@@ -61,8 +61,6 @@ static int cmd_set_handler(const struct shell* sh, int argc, char** argv)
         return -EFAULT;
     }
 
-    struct iomico_myled_data *myled_data = dev->data;
-	
     int ret;
     long arg = shell_strtol(argv[2], 10, &ret);
 	if (ret < 0) {
@@ -75,7 +73,11 @@ static int cmd_set_handler(const struct shell* sh, int argc, char** argv)
 		return -ERANGE;
     }
 
-    myled_data->gpio_ok = arg;
+    ret = iomico_myled_set_gpio_ok(dev, (bool)arg);
+    if (ret != 0) {
+        shell_error(sh, "Could not iomico_myled_set_gpio_ok, ret:%d", ret);
+        return -EFAULT;
+    }
 
     return 0;
 }
