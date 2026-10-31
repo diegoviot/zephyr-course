@@ -1,7 +1,7 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
-#include <zephyr/drivers/sensor.h>
+#include "iomico_myled.h"
 
 /* The devicetree node identifier for the "led0" alias. */
 #define LED_NODE DT_ALIAS(app_led)
@@ -14,19 +14,18 @@ namespace {
     void test() {
         const struct device* driver0 = DEVICE_DT_GET(DT_NODELABEL(iomico_myled0));
         const struct device* driver1 = DEVICE_DT_GET(DT_NODELABEL(iomico_myled1));
-        struct sensor_value val;
         
-        LOG_INF("Calling sensor_sample_fetch (turn LEDs ON)...");
-        auto ret1 = sensor_sample_fetch(driver0);
-        auto ret2 = sensor_sample_fetch(driver1);
-        LOG_INF("sensor_sample_fetch Return: %d %d", ret1, ret2);
+        LOG_INF("Calling iomico_myled_on (turn LEDs ON)...");
+        auto ret1 = iomico_myled_on(driver0);
+        auto ret2 = iomico_myled_on(driver1);
+        LOG_INF("iomico_myled_on Return: %d %d", ret1, ret2);
         
         k_msleep(500);
         
-        LOG_INF("Calling sensor_channel_get (turn LEDs OFF)...");
-        ret1 = sensor_channel_get(driver0, SENSOR_CHAN_AMBIENT_TEMP, &val);
-        ret2 = sensor_channel_get(driver1, SENSOR_CHAN_AMBIENT_TEMP, &val);
-        LOG_INF("sensor_channel_get Return: %d %d", ret1, ret2);
+        LOG_INF("Calling iomico_myled_off (turn LEDs OFF)...");
+        ret1 = iomico_myled_off(driver0);
+        ret2 = iomico_myled_off(driver1);
+        LOG_INF("iomico_myled_off Return: %d %d", ret1, ret2);
     }
 }
 

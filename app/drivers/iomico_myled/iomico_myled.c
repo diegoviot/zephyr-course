@@ -1,4 +1,3 @@
-#include <zephyr/drivers/sensor.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/logging/log.h> 
 #include "iomico_myled.h"
@@ -9,12 +8,12 @@ LOG_MODULE_REGISTER(iomico_myled, LOG_LEVEL_DBG);
 
 static uint32_t driver_cnt = 0;
 
-static int sample_fetch_iomico_myled(const struct device *dev, enum sensor_channel chan)
+static int led_on(const struct device *dev)
 {
     const struct iomico_myled_config *cfg = dev->config;
     struct iomico_myled_data *myled_data = dev->data;
 
-    LOG_INF("Iomico - MyLed - sample_fetch - turning LED ON");
+    LOG_INF("Iomico - MyLed - turning LED ON");
     if(myled_data->gpio_ok) gpio_pin_set_dt(&cfg->led_gpio, 1);
     myled_data->led_state = true;
     driver_cnt++;
@@ -22,14 +21,12 @@ static int sample_fetch_iomico_myled(const struct device *dev, enum sensor_chann
     return 0;
 }
 
-static int channel_get_iomico_myled(const struct device *dev,
-                                    enum sensor_channel chan,
-                                    struct sensor_value *val)
+static int led_off(const struct device *dev)
 {
     const struct iomico_myled_config *cfg = dev->config;
     struct iomico_myled_data *myled_data = dev->data;
 
-    LOG_INF("Iomico - MyLed - channel_get - turning LED OFF");
+    LOG_INF("Iomico - MyLed - turning LED OFF");
     if(myled_data->gpio_ok) gpio_pin_set_dt(&cfg->led_gpio, 0);
     myled_data->led_state = false;
     driver_cnt++;
@@ -37,9 +34,9 @@ static int channel_get_iomico_myled(const struct device *dev,
     return 0;
 }
 
-static DEVICE_API(sensor, api_iomico_assignment) = {
-    .sample_fetch = sample_fetch_iomico_myled,
-    .channel_get = channel_get_iomico_myled,
+static const struct iomico_myled_api api_iomico_assignment = {
+    .on  = led_on,
+    .off = led_off,
 };
 
 // init function

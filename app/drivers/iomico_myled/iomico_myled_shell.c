@@ -1,5 +1,4 @@
 #include <zephyr/shell/shell.h>
-#include <zephyr/drivers/sensor.h>
 #include "iomico_myled.h"
 
 static int cmd_channel_get_handler(const struct shell* sh, int argc, char** argv)
@@ -10,11 +9,10 @@ static int cmd_channel_get_handler(const struct shell* sh, int argc, char** argv
         return -EFAULT;
     }
 
-    struct sensor_value val;
-    int ret = sensor_channel_get(dev, SENSOR_CHAN_AMBIENT_TEMP, &val);
+    int ret = iomico_myled_off(dev);
     
     if (ret != 0) {
-        shell_error(sh, "Could not sensor_channel_get, ret:%d", ret);
+        shell_error(sh, "Could not iomico_myled_off, ret:%d", ret);
         return -EFAULT;
     }
 
@@ -29,10 +27,10 @@ static int cmd_sample_fetch_handler(const struct shell* sh, int argc, char** arg
         return -EFAULT;
     }
 
-    int ret = sensor_sample_fetch(dev);
+    int ret = iomico_myled_on(dev);
     
     if (ret != 0) {
-        shell_error(sh, "Could not sensor_sample_fetch, ret:%d", ret);
+        shell_error(sh, "Could not iomico_myled_on, ret:%d", ret);
         return -EFAULT;
     }
 

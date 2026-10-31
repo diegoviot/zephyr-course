@@ -1,5 +1,6 @@
 if (CONFIG_IOMICO_MYLED)
     target_sources(app PRIVATE iomico_myled.c)
+    target_include_directories(app PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
     if (CONFIG_SHELL)
         target_sources(app PRIVATE iomico_myled_shell.c)
     endif ()
