@@ -9,10 +9,10 @@ static int cmd_channel_get_handler(const struct shell* sh, int argc, char** argv
         return -EFAULT;
     }
 
-    int ret = iomico_myled_off(dev);
+    int ret = iomico_myled_state_off(dev);
     
     if (ret != 0) {
-        shell_error(sh, "Could not iomico_myled_off, ret:%d", ret);
+        shell_error(sh, "Could not iomico_myled_state_off, ret:%d", ret);
         return -EFAULT;
     }
 
@@ -27,10 +27,10 @@ static int cmd_sample_fetch_handler(const struct shell* sh, int argc, char** arg
         return -EFAULT;
     }
 
-    int ret = iomico_myled_on(dev);
+    int ret = iomico_myled_state_on(dev);
     
     if (ret != 0) {
-        shell_error(sh, "Could not iomico_myled_on, ret:%d", ret);
+        shell_error(sh, "Could not iomico_myled_state_on, ret:%d", ret);
         return -EFAULT;
     }
 

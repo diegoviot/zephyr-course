@@ -15,17 +15,17 @@ namespace {
         const struct device* driver0 = DEVICE_DT_GET(DT_NODELABEL(iomico_myled0));
         const struct device* driver1 = DEVICE_DT_GET(DT_NODELABEL(iomico_myled1));
         
-        LOG_INF("Calling iomico_myled_on (turn LEDs ON)...");
-        auto ret1 = iomico_myled_on(driver0);
-        auto ret2 = iomico_myled_on(driver1);
-        LOG_INF("iomico_myled_on Return: %d %d", ret1, ret2);
+        LOG_INF("Calling iomico_myled_state_on (turn LEDs ON)...");
+        auto ret1 = iomico_myled_state_on(driver0);
+        auto ret2 = iomico_myled_state_on(driver1);
+        LOG_INF("iomico_myled_state_on Return: %d %d", ret1, ret2);
         
         k_msleep(500);
         
-        LOG_INF("Calling iomico_myled_off (turn LEDs OFF)...");
-        ret1 = iomico_myled_off(driver0);
-        ret2 = iomico_myled_off(driver1);
-        LOG_INF("iomico_myled_off Return: %d %d", ret1, ret2);
+        LOG_INF("Calling iomico_myled_state_off (turn LEDs OFF)...");
+        ret1 = iomico_myled_state_off(driver0);
+        ret2 = iomico_myled_state_off(driver1);
+        LOG_INF("iomico_myled_state_off Return: %d %d", ret1, ret2);
     }
 }
 

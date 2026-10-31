@@ -18,17 +18,17 @@ struct iomico_myled_data {
 };
 
 /* Custom driver API: function-pointer table */
-typedef int (*iomico_myled_dev_t)(const struct device *dev);
+typedef int (*iomico_myled_state_t)(const struct device *dev);
 typedef int (*iomico_myled_gpio_ok_t)(const struct device *dev, bool value);
 
 struct iomico_myled_api {
-    iomico_myled_dev_t     on;
-    iomico_myled_dev_t     off;
+    iomico_myled_state_t   on;
+    iomico_myled_state_t   off;
     iomico_myled_gpio_ok_t set_gpio_ok;
     iomico_myled_gpio_ok_t get_gpio_ok;
 };
 
-static inline int iomico_myled_on(const struct device *dev)
+static inline int iomico_myled_state_on(const struct device *dev)
 {
     const struct iomico_myled_api *api = (const struct iomico_myled_api *)dev->api;
 
@@ -38,7 +38,7 @@ static inline int iomico_myled_on(const struct device *dev)
     return api->on(dev);
 }
 
-static inline int iomico_myled_off(const struct device *dev)
+static inline int iomico_myled_state_off(const struct device *dev)
 {
     const struct iomico_myled_api *api = (const struct iomico_myled_api *)dev->api;
 
