@@ -47,7 +47,7 @@ static int cmd_info_handler(const struct shell* sh, int argc, char** argv)
 
     struct iomico_myled_data *myled_data = dev->data;
 
-    shell_info(sh, "Device name: %s", argv[1]);
+    shell_info(sh, "Device name: %s", dev->name);
     shell_info(sh, "Ready state: %d", myled_data->gpio_ok);
 
     return 0;
