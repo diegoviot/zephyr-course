@@ -1,4 +1,5 @@
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/sensor.h>
 #include <zephyr/logging/log.h> 
 #include "iomico_myled.h"
 
@@ -8,26 +9,33 @@ LOG_MODULE_REGISTER(iomico_myled, LOG_LEVEL_DBG);
 
 static uint32_t driver_cnt = 0;
 
-static int led_on(const struct device *dev)
+static int sample_fetch_impl(const struct device *dev, enum sensor_channel chan)
 {
     const struct iomico_myled_config *cfg = dev->config;
     struct iomico_myled_data *myled_data = dev->data;
 
+    ARG_UNUSED(chan);
+
     LOG_INF("Iomico - MyLed - turning LED ON");
-    if(myled_data->gpio_ok) gpio_pin_set_dt(&cfg->led_gpio, 1);
+    if (myled_data->gpio_ok) gpio_pin_set_dt(&cfg->led_gpio, 1);
     myled_data->led_state = true;
     driver_cnt++;
     LOG_DBG("led_state:%d driver_cnt:%u", myled_data->led_state, driver_cnt);
     return 0;
 }
 
-static int led_off(const struct device *dev)
+static int channel_get_impl(const struct device *dev,
+                            enum sensor_channel chan,
+                            struct sensor_value *val)
 {
     const struct iomico_myled_config *cfg = dev->config;
     struct iomico_myled_data *myled_data = dev->data;
 
+    ARG_UNUSED(chan);
+    ARG_UNUSED(val);
+
     LOG_INF("Iomico - MyLed - turning LED OFF");
-    if(myled_data->gpio_ok) gpio_pin_set_dt(&cfg->led_gpio, 0);
+    if (myled_data->gpio_ok) gpio_pin_set_dt(&cfg->led_gpio, 0);
     myled_data->led_state = false;
     driver_cnt++;
     LOG_DBG("led_state:%d driver_cnt:%u", myled_data->led_state, driver_cnt);
@@ -43,10 +51,14 @@ static int set_gpio_ok(const struct device *dev, bool value)
     return 0;
 }
 
-static const struct iomico_myled_api api_iomico_assignment = {
-    .on          = led_on,
-    .off         = led_off,
-    .set_gpio_ok = set_gpio_ok,
+static const struct iomico_myled_custom_api api_iomico_assignment = {
+    .sensor = {
+        .sample_fetch = sample_fetch_impl,
+        .channel_get  = channel_get_impl,
+    },
+    .ext = {
+        .set_gpio_ok = set_gpio_ok,
+    },
 };
 
 // init function
