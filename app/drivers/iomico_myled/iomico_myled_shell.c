@@ -10,14 +10,18 @@ static int cmd_channel_get_handler(const struct shell* sh, int argc, char** argv
         return -EFAULT;
     }
 
-    shell_info(sh, "sensor_channel_get");
     struct sensor_value val;
     int ret = sensor_channel_get(dev, SENSOR_CHAN_AMBIENT_TEMP, &val);
+    // Test values
+    // val.val1 = -5;
+    // val.val2 = -2;
 
     if (ret != 0) {
         shell_error(sh, "Could not sensor_channel_get, ret:%d", ret);
         return -EFAULT;
     }
+    bool positive = (val.val1 * val.val2) >= 0;
+    shell_info(sh, "sensor_channel_get (val1:%d val2:%d): %d.%d", val.val1, val.val2, (positive?1:-1)*abs(val.val1), abs(val.val2));
 
     return 0;
 }
